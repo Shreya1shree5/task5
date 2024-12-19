@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: myapp-v1
-        image: shreya123shree/demo-test:tagversion
+        image: shreya123shree/demo-test
         ports:
         - containerPort: 8080
 ---
