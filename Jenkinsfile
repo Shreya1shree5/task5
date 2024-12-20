@@ -1,41 +1,44 @@
 pipeline {
     agent any
 	
+	
 	environment {
-		   PROJECT_ID = 'solid-altar-444910-c9'
-           CLUSTER_NAME = 'cluster-1'
-           LOCATION = 'us-central1-c'
-           CREDENTIALS_ID = 'My First Project'		
+         PROJECT_ID = 'solid-altar-444910-c9'
+         CLUSTER_NAME = 'cluster-1'
+         LOCATION = 'us-central1'
+         CREDENTIALS_ID = 'kubernetes'	
 	}
-
 	
     stages {
 	    stage('Scm Checkout') {
 		    steps {
-			    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Shreya1shree5/task5.git']])
+			    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Shreya1shree5/k8s.git/']])
 		    }
-	    }
-    stage('Build Docker Image') {
+		    }
+	    
+	 stage('Build Docker Image') {
 		    steps {
 			    sh 'whoami'
 			    script {
-				    myimage = docker.build("shreya123shree/demo-test:${env.BUILD_ID}")
+				    myimageone = docker.build("shreya123shree/demo-testone:${env.BUILD_ID}")
 			    }
 		    }
 	    }
-    stage("Push Docker Image") {
+	    
+	    stage('Push Docker Image') {
 		    steps {
 			    script {
 				    echo "Push Docker Image"
 				    withCredentials([string(credentialsId: 'docker_id', variable: 'docker_id')]) {
             				sh "docker login -u shreya123shree -p ${docker_id}"
 				    }
-				        myimage.push("${env.BUILD_ID}")
+				        myimageone.push("${env.BUILD_ID}")
 				    
 			    }
 		    }
 	    }
-	 stage('Deploy to K8s') {
+	    
+	    stage('Deploy to K8s') {
 		    steps{
 			    echo "Deployment started ..."
 			    sh 'ls -ltr'
@@ -46,6 +49,5 @@ pipeline {
 			    echo "Deployment Finished ..."
 		    }
 	    }
-    
-}
+    }
 }
